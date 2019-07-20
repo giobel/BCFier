@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bcfier.Revit</RootNamespace>
     <AssemblyName>Bcfier.Revit</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -213,20 +213,13 @@
     <!-- MULTIVERSION REVIT API REFERENCES START -->
     <!-- DEBUG -->
     <!-- 2015 -->
-    <Reference Include="RevitAPI">
-      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI" Condition="'$(Configuration)' == 'Debug-2015'">
-      <HintPath>C:\Program Files\Autodesk\Revit 2015\RevitAPIIFC.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <!-- 2016 -->
     <Reference Include="RevitAPI" Condition="'$(Configuration)' == 'Debug-2016'">
       <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="RevitAPIUI" Condition="'$(Configuration)' == 'Debug-2016'">
-      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI" Condition="'$(Configuration)' == 'Debug-2016'">
@@ -342,6 +335,11 @@
     <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
     </Reference>
+    <Reference Include="RevitAPIUI, Version=16.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Xml" />
@@ -370,6 +368,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Data\RevitView.cs" />
+    <Compile Include="Entry\CmdBatchIssues.cs" />
     <Compile Include="Entry\ExtAppBcfier.cs" />
     <Compile Include="Entry\CmdMain.cs" />
     <Compile Include="Entry\ExtEvntOpenView.cs" />
@@ -439,8 +438,8 @@
       <SourceDLLs Include="$(TargetDir)*.dll" />
       <SourceManifest Include="$(TargetDir)*.addin" />
     </ItemGroup>
-    <Copy SourceFiles="@(SourceDLLs)" DestinationFolder="$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\$(ProjectName)\%(RecursiveDir)" />
-    <Copy SourceFiles="@(SourceManifest)" DestinationFolder="$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\" />
+    <!--<Copy SourceFiles="@(SourceDLLs)" DestinationFolder="$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\$(ProjectName)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(SourceManifest)" DestinationFolder="$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\" />-->
   </Target>
   <!-- MULTIVERSION POST BUILD EVENTS END -->
 </Project>

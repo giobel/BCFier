@@ -19,7 +19,7 @@ namespace Bcfier.Win
   {
     public MainWindow()
     {
-      InitializeComponent();
+            InitializeComponent();
 
       string[] args = Environment.GetCommandLineArgs();
       if (args.Length > 1 && File.Exists(args[1]))

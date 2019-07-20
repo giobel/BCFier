@@ -34,7 +34,7 @@ namespace Bcfier.Revit.Entry
                                                                      "BCFier " + Assembly.GetExecutingAssembly().GetName().Version,
                                                                      Path.Combine(_path, "Bcfier.Revit.dll"),
                                                                      "Bcfier.Revit.Entry.CmdMain")) as PushButton;
-
+                
         // Images and Tooltip
         if (pushButton != null)
         {
@@ -42,7 +42,14 @@ namespace Bcfier.Revit.Entry
           pushButton.LargeImage = LoadPngImgSource("Bcfier.Assets.BCFierIcon32x32.png", Path.Combine(_path, "Bcfier.dll"));
           pushButton.ToolTip = "BCFier";
         }
-      }
+
+        // ADD BUTTON TO CREATE ISSUES FROM SELECTION
+        PushButton pushButtonBatchIssue = panel.AddItem(new PushButtonData("BatchIssue",
+                                                                "BatchIssue " + Assembly.GetExecutingAssembly().GetName().Version,
+                                                                Path.Combine(_path, "Bcfier.Revit.dll"),
+                                                                "Bcfier.Revit.Entry.CmdBatchIssues")) as PushButton;
+
+        }
       catch (Exception ex1)
       {
         MessageBox.Show("exception: " + ex1);
