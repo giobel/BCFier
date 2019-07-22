@@ -40,21 +40,39 @@ namespace Bcfier.Revit.Entry
 
                 IList<Reference> selectedIssues = uidoc.Selection.PickObjects(ObjectType.Element, "Select issues");
 
+                //Get the UI view
+                UIView uiview = null;
+
+                IList<UIView> uiviews = uidoc.GetOpenUIViews();
+
+                foreach (UIView uv in uiviews)
+                {
+                    if (uv.ViewId.Equals(doc.ActiveView.Id))
+                    {
+                        uiview = uv;
+                        break;
+                    }
+                }
+
                 using (Transaction t = new Transaction(doc, "Export selected issues"))
                 {
                     t.Start();
+                    //Isolate the objects to select them easily. Reset the temporary view mode before exporting the images
+                    uidoc.ActiveView.DisableTemporaryViewMode(TemporaryViewMode.TemporaryHideIsolate);
 
                     foreach (Reference item in selectedIssues)
                     {
-
-
                         Element issueElement = doc.GetElement(item);
+
+                        string checkStatus = issueElement.LookupParameter("Status").AsValueString();
+
+                        string checkPosition = issueElement.LookupParameter("Position Check").AsString();
 
                         Markup issue = new Markup(DateTime.Now);
 
                         Topic tp = new Topic();
                         tp.Title = issueElement.Name;
-                        tp.Description = issueElement.Id.ToString();
+                        tp.Description = checkStatus;
                         issue.Topic = tp;
 
 
@@ -68,7 +86,7 @@ namespace Bcfier.Revit.Entry
 
                         var c = new Comment
                         {
-                            Comment1 = "Comment something",
+                            Comment1 = checkPosition,
                             Author = Utils.GetUsername(),
                             //Status = comboStatuses.SelectedValue.ToString(),
                             //VerbalStatus = VerbalStatus.Text,
@@ -77,14 +95,15 @@ namespace Bcfier.Revit.Entry
                         };
                         issue.Comment.Add(c);
 
-                        uidoc.ActiveView.IsolateElementTemporary(item.ElementId);
-
+                        // Zoom to the selected element
                         uidoc.ShowElements(item.ElementId);
 
-                        uidoc.ActiveView.DisableTemporaryViewMode(TemporaryViewMode.TemporaryHideIsolate);
+                        SetViewZoomExtent(uiview, 1.2);
 
                         string path = Path.Combine(bcfFile.TempPath, issue.Topic.Guid, view.Snapshot);
+                        // Export image
                         SaveRevitSnapshot(uidoc.Document, path);
+
                         view.SnapshotPath = path;
 
                         issue.Viewpoints.Add(view);
@@ -120,6 +139,22 @@ namespace Bcfier.Revit.Entry
       }
 
     }
+        private void SetViewZoomExtent(UIView uiview, double scaleFactor)
+        {
+            Rectangle rect = uiview.GetWindowRectangle();
+            IList<XYZ> corners = uiview.GetZoomCorners();
+            XYZ p = corners[0];
+            XYZ q = corners[1];
+
+            XYZ v = q - p;
+            XYZ center = p + 0.5 * v;
+            v *= scaleFactor;
+            p = center - v;
+            q = center + v;
+
+            uiview.ZoomAndCenterRectangle(p, q);
+        }
+
         private string SaveRevitSnapshot(Document doc, string path)
         {
             try
